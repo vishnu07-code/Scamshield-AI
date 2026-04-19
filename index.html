@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Fake Message Detector</title>
+    <!-- Modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-layout">
+
+        <!-- Feature: Left Side Panel (Scam Examples) -->
+        <aside class="side-panel left-panel">
+            <h2>⚠️ Common Scam Examples</h2>
+
+            <!-- Dynamic Hover Cards -->
+            <div class="scam-card" data-title="Prize & Lottery Scam"
+                data-info="Scammers use fake rewards to trick you into clicking malicious links. The goal is to steal your personal info or demand an 'advance fee'.">
+                "You won ₹50,000! Click now to claim your reward instantly: http://free-money-claim.net"
+            </div>
+            <div class="scam-card" data-title="Phishing Scam Alert"
+                data-info="Fake alerts about blocked accounts create urgency. They lead to fake login pages designed to log and steal your passwords.">
+                "Your bank account is blocked due to unusual login. Verify immediately here:
+                http://verify-account-now.xyz"
+            </div>
+            <div class="scam-card" data-title="Delivery Fee Fraud"
+                data-info="Scammers pretend a package failed delivery to extract a small 'redelivery fee', quietly capturing your credit card details.">
+                "Package delivery failed. Pay delivery fee to receive your package: http://delivery-fee-pay.com"
+            </div>
+            <div class="scam-card" data-title="Emergency / Toll Penalty"
+                data-info="Fear-based scams threatening massive penalties or license suspension to panic you into paying quickly without thinking.">
+                "URGENT: Final notice. Pay your pending highway toll penalty immediately or your license will be
+                suspended: http://toll-pay.xyz"
+            </div>
+        </aside>
+
+        <!-- Main Core Application -->
+        <main class="container">
+            <h1>ScamShield AI</h1>
+            <p class="subtitle">Detect scam messages and malicious links</p>
+
+            <!-- Analytics Dashboard -->
+            <div class="analytics-dashboard">
+                <div class="stat"><span id="statTotal">0</span><small>Analyzed</small></div>
+                <div class="stat"><span id="statGenuine">0</span><small>Genuine</small></div>
+                <div class="stat"><span id="statSuspicious">0</span><small>Suspicious</small></div>
+                <div class="stat"><span id="statFake">0</span><small>Fake</small></div>
+            </div>
+
+            <div class="input-group">
+                <textarea id="messageInput" placeholder="Paste or type your message here..."></textarea>
+                <div id="highlightedMessage" class="hidden"></div>
+
+                <div class="text-stats">
+                    <span id="charCount">0 characters</span> • <span id="wordCount">0 words</span>
+                </div>
+
+                <!-- Image Upload Feature Simulation -->
+                <div class="file-upload-wrapper">
+                    <label for="imageUpload" class="file-upload-label">
+                        <span id="uploadLabelText">📎 Upload Image for Inspection</span>
+                        <input type="file" id="imageUpload" accept="image/*" class="hidden-input">
+                    </label>
+                    <div id="fileWarningDisplay" class="file-warning-display hidden"></div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="generateBtn" class="btn btn-secondary" style="flex:1;">Generate Fake</button>
+                <button id="analyzeBtn" class="btn btn-primary" style="flex:1.5;">Analyze Message</button>
+                <button id="clearBtn" class="btn btn-secondary" style="flex:0.8;">Clear</button>
+            </div>
+
+            <!-- Dedicated Link Analyzer Panel -->
+            <div class="link-analyzer-box">
+                <h4>🔗 Dedicated Link Analyzer</h4>
+                <div style="display: flex; gap: 0.8rem; align-items: stretch; margin-top: 0.8rem;">
+                    <input type="url" id="linkInput" class="link-input"
+                        placeholder="Paste a URL to check if it is safe..." style="flex: 1;">
+                    <button id="analyzeLinkBtn" class="btn btn-primary" style="padding: 0 1.5rem;">Check Link</button>
+                </div>
+            </div>
+
+            <!-- AI Simulator Overlay -->
+            <div id="aiSimulation" class="ai-simulation hidden">
+                <div class="spinner"></div>
+                <div id="aiStatusText">Analyzing message...</div>
+            </div>
+
+            <div id="resultContainer" class="result-container hidden">
+                <div class="result-card" id="resultCard">
+                    <!-- Result Headings & Interactive Elements -->
+                    <div class="result-header">
+                        <div style="display: flex; align-items: center; gap: 0.8rem;">
+                            <h2 id="resultTitle">
+                                <span id="resultIcon"></span>
+                                <span id="resultLabel">Genuine</span>
+                            </h2>
+                            <!-- Risk Level Badge -->
+                            <span id="riskLevelBadge" class="risk-badge">Low Risk</span>
+                        </div>
+                        <button id="speakBtn" class="speak-btn" title="Speak Result">🔊</button>
+                    </div>
+
+                    <!-- Confidence System Output -->
+                    <div id="confidenceStatement" class="confidence-statement"></div>
+
+                    <!-- Dual Score Mechanism -->
+                    <div class="scores-container">
+                        <div class="progress-wrapper">
+                            <div class="progress-header">
+                                <span>Risk Score</span>
+                                <span id="riskPercentage">0%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div id="progressBarFill" class="progress-bar-fill"></div>
+                            </div>
+                        </div>
+
+                        <div class="progress-wrapper">
+                            <div class="progress-header">
+                                <span>Trust Score</span>
+                                <span id="trustPercentage">100%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div id="trustBarFill" class="progress-bar-fill trust-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Automated Explanation Engine -->
+                    <div id="explanationEngine" class="explanation-text hidden"></div>
+
+                    <!-- Safe Alternative Suggestion Box -->
+                    <div id="safeAlternative" class="safe-alternative hidden">
+                        💡 <b>Safe Alternative Suggestion:</b> Avoid clicking unknown links. Visit the official website
+                        or verify the sender directly.
+                    </div>
+
+                    <!-- Scam Breakdown Panel -->
+                    <div id="scamBreakdown" class="scam-breakdown hidden">
+                        <h4 style="margin-bottom:0.5rem; color:var(--text-primary);">💡 Scam Score Breakdown:</h4>
+                        <ul id="breakdownList"></ul>
+                    </div>
+
+                    <!-- Threat Warning Engine -->
+                    <div id="warningMessage" class="warning-message hidden"></div>
+
+                    <div id="resultText"></div>
+
+                    <!-- Detection Speed Tracker -->
+                    <div class="detection-time">Rapid detection engine active. Detection completed in: <b
+                            id="detectionTimeValue"></b>s</div>
+                </div>
+            </div>
+
+            <!-- History Tracker -->
+            <div class="history-container">
+                <h3>Recent Scans</h3>
+                <ul id="historyList" class="history-list"></ul>
+            </div>
+
+            <!-- Bottom Disclaimer Details -->
+            <div class="disclaimer">
+                <i>This tool provides predictions based on patterns and may not be 100% accurate. Always verify from
+                    official sources.</i>
+            </div>
+        </main>
+
+        <!-- Feature: Right Side Panel (Interactive Expanding Safety Tips) -->
+        <aside class="side-panel right-panel">
+            <h2>🛡️ Safety Tips</h2>
+            <ul class="safety-accordion">
+                <li class="safety-tip-card">
+                    <div class="tip-header">
+                        <div>❌ <b>Never share OTP or passwords</b></div>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        Scammers can use your OTP to instantly access your actual bank account and steal your funds.
+                        Official sources will never ask for them.
+                    </div>
+                </li>
+
+                <li class="safety-tip-card">
+                    <div class="tip-header">
+                        <div>🔗 <b>Avoid clicking unknown links</b></div>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        Obscure URLs can silently install malware directly to your device or route you to identical fake
+                        websites to capture passwords.
+                    </div>
+                </li>
+
+                <li class="safety-tip-card">
+                    <div class="tip-header">
+                        <div>🆔 <b>Verify sender identity natively</b></div>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        Always search for the official customer service endpoints online rather than blindly evaluating
+                        contact data placed inside random texts.
+                    </div>
+                </li>
+
+                <li class="safety-tip-card">
+                    <div class="tip-header">
+                        <div>📱 <b>Enable robust 2FA</b></div>
+                        <span class="arrow">▼</span>
+                    </div>
+                    <div class="tip-content">
+                        Always try to deploy explicit Authenticator applications (like Google Auth) to completely
+                        mitigate attacker endpoints even if passwords leak.
+                    </div>
+                </li>
+            </ul>
+        </aside>
+
+    </div>
+
+    <!-- Centralized Hover Tooltip Extracted From Panels to Prevent CSS Clipping Constraints -->
+    <div id="hoverTooltip" class="hover-tooltip">
+        <div class="tooltip-header">
+            <h4 id="ttTitle">Title</h4>
+        </div>
+        <div class="tooltip-content">
+            <p id="ttInfo">Explanation bounds securely loading...</p>
+            <div class="tooltip-example">
+                <span class="emoji-mockup">📱</span>
+                <div id="ttMessage" class="tooltip-message">Message here</div>
+            </div>
+            <div class="tooltip-warning">⚠ Suspicious link detected in example.</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
